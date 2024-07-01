@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Toolbar, Typography, Avatar, Box } from '@mui/material';
-import { Home, Business, LocalHospital, Computer, ListAlt, Work } from '@mui/icons-material';
+import { Home, Business, LocalHospital, Computer, ListAlt, Work, ExitToApp, AccountCircle } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
@@ -31,8 +31,9 @@ const UserInfo = styled(Box)(({ theme }) => ({
 }));
 
 const SideMenu = () => {
-  const { user } = useUser();
-  const isLoggedIn = !!user; // Verifica si el usuario está logueado
+  const { user, logout } = useUser();
+  const isLoggedIn = !!user;
+  const userRole = user?.role;
 
   return (
     <DrawerStyled variant="permanent">
@@ -49,15 +50,22 @@ const SideMenu = () => {
           <ListItemIcon><Home /></ListItemIcon>
           <ListItemText primary="Inicio" />
         </ListItem>
-        <ListItem button component={Link} to="/institutions" disabled={!isLoggedIn}>
-          <ListItemIcon><Business /></ListItemIcon>
-          <ListItemText primary="Instituciones" />
-        </ListItem>
-        <ListItem button component={Link} to="/doctors" disabled={!isLoggedIn}>
+        {userRole === 'institucion' ? (
+          <ListItem button component={Link} to="/profile">
+            <ListItemIcon><AccountCircle /></ListItemIcon>
+            <ListItemText primary="Perfil" />
+          </ListItem>
+        ) : (
+          <ListItem button component={Link} to="/institutions" disabled={!isLoggedIn || userRole === 'medico' || userRole === 'ia'}>
+            <ListItemIcon><Business /></ListItemIcon>
+            <ListItemText primary="Instituciones" />
+          </ListItem>
+        )}
+        <ListItem button component={Link} to="/doctors" disabled={!isLoggedIn || userRole === 'institucion' || userRole === 'ia'}>
           <ListItemIcon><LocalHospital /></ListItemIcon>
           <ListItemText primary="Médicos" />
         </ListItem>
-        <ListItem button component={Link} to="/ai" disabled={!isLoggedIn}>
+        <ListItem button component={Link} to="/ai" disabled={!isLoggedIn || userRole === 'medico' || userRole === 'institucion'}>
           <ListItemIcon><Computer /></ListItemIcon>
           <ListItemText primary="IA" />
         </ListItem>
@@ -69,9 +77,17 @@ const SideMenu = () => {
           <ListItemIcon><Work /></ListItemIcon>
           <ListItemText primary="Ofertas Laborales" />
         </ListItem>
+        {isLoggedIn && (
+          <ListItem button onClick={logout}>
+            <ListItemIcon><ExitToApp /></ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        )}
       </List>
     </DrawerStyled>
   );
 };
 
 export default SideMenu;
+
+
