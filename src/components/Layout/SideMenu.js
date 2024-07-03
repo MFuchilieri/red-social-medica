@@ -61,11 +61,11 @@ const SideMenu = () => {
             <ListItemText primary="Instituciones" />
           </ListItem>
         )}
-        <ListItem button component={Link} to="/doctors" disabled={!isLoggedIn || userRole === 'institucion' || userRole === 'ia'}>
+        <ListItem button component={Link} to="/doctors" disabled={!isLoggedIn || userRole === 'institucion'}>
           <ListItemIcon><LocalHospital /></ListItemIcon>
           <ListItemText primary="Médicos" />
         </ListItem>
-        <ListItem button component={Link} to="/ai" disabled={!isLoggedIn || userRole === 'medico' || userRole === 'institucion'}>
+        <ListItem button component={Link} to="/ai" disabled={!isLoggedIn || userRole === 'institucion'}>
           <ListItemIcon><Computer /></ListItemIcon>
           <ListItemText primary="IA" />
         </ListItem>
@@ -89,5 +89,3 @@ const SideMenu = () => {
 };
 
 export default SideMenu;
-
-

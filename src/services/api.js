@@ -6,7 +6,7 @@ const api = axios.create({
 
 export const getDoctors = async () => {
   try {
-    const response = await api.get('/doctors'); // Asegúrate de que este endpoint exista en tu backend
+    const response = await api.get('/doctors');
     return response.data;
   } catch (error) {
     console.error('Error fetching doctors:', error);
@@ -16,10 +16,22 @@ export const getDoctors = async () => {
 
 export const getAISystems = async () => {
   try {
-    const response = await api.get('/ai'); // Asegúrate de que este endpoint exista en tu backend
+    const response = await api.get('/ai');
     return response.data;
   } catch (error) {
     console.error('Error fetching AI systems:', error);
     throw error;
   }
 };
+
+export const registerUser = async (userData) => {
+  try {
+    const response = await api.post('/register', userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error registering user:', error);
+    throw error;
+  }
+};
+
+export default api;
