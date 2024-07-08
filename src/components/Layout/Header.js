@@ -1,24 +1,31 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Switch, Box } from '@mui/material';
-import { useTheme } from '../../context/ThemeContext';
+import { AppBar, Toolbar, Typography, IconButton, Switch, Button } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useTheme } from '@mui/material/styles';
+import { useUser } from '../../context/UserContext';
 
-const Header = () => {
-  const { theme, toggleTheme } = useTheme();
+const Header = ({ toggleTheme }) => {
+  const theme = useTheme();
+  const { user, logout } = useUser();
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed" style={{ marginLeft: 240 }}>
       <Toolbar>
+        <IconButton edge="start" color="inherit" aria-label="menu" style={{ marginRight: theme.spacing(2) }}>
+          <MenuIcon />
+        </IconButton>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
-          Red Social Médica
+          {user ? `Hola, ${user.name}` : 'Bienvenido'}
         </Typography>
-        <Box display="flex" alignItems="center">
-          <Typography variant="body1">{theme.palette.mode === 'light' ? 'Claro' : 'Oscuro'}</Typography>
-          <Switch checked={theme.palette.mode === 'dark'} onChange={toggleTheme} />
-        </Box>
+        <Switch checked={theme.palette.mode === 'dark'} onChange={toggleTheme} />
+        {user && (
+          <Button color="inherit" onClick={logout}>
+            Logout
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );
 };
 
 export default Header;
-

@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { registerUser } from '../services/api';
 import { styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 const schema = yup.object().shape({
   institutionName: yup.string().required('Nombre de la institución es requerido'),
@@ -24,14 +25,15 @@ const FormContainer = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
-const RegisterInstitution = ({ onGoBack }) => {
+const RegisterInstitution = () => {
   const { handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     const userData = {
-      institutionName: data.institutionName,
+      name: data.institutionName,
       username: data.username,
       password: data.password,
       email: data.email,
@@ -46,7 +48,7 @@ const RegisterInstitution = ({ onGoBack }) => {
       await registerUser(userData);
       alert('Institución registrada exitosamente');
       reset();
-      onGoBack();
+      navigate('/');
     } catch (error) {
       alert('Error registrando institución');
     }
@@ -116,112 +118,112 @@ const RegisterInstitution = ({ onGoBack }) => {
           defaultValue=""
           render={({ field }) => (
             <TextField
-              {...field}
-              label="Contraseña"
-              type="password"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!errors.password}
-              helperText={errors.password ? errors.password.message : ''}
-            />
-          )}
-        />
-        <Controller
-          name="confirmPassword"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Confirmar Contraseña"
-              type="password"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
-            />
-          )}
-        />
-        <Controller
-          name="country"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="País"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!errors.country}
-              helperText={errors.country ? errors.country.message : ''}
-            />
-          )}
-        />
-        <Controller
-          name="address"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Domicilio"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!errors.address}
-              helperText={errors.address ? errors.address.message : ''}
-            />
-          )}
-        />
-        <Controller
-          name="phone"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Teléfono"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!errors.phone}
-              helperText={errors.phone ? errors.phone.message : ''}
-            />
-          )}
-        />
-        <Controller
-          name="contactName"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Nombre del Contacto"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!!errors.contactName}
-              helperText={errors.contactName ? errors.contactName.message : ''}
-            />
-          )}
-        />
-        <Box display="flex" justifyContent="space-between" mt={2}>
-          <Button variant="outlined" onClick={handleReset}>
-            Limpiar
-          </Button>
-          <Button variant="contained" color="secondary" onClick={onGoBack}>
-            Volver
-          </Button>
-          <Button type="submit" variant="contained" color="primary">
-            Grabar
-          </Button>
-        </Box>
+            {...field}
+            label="Contraseña"
+            type="password"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!errors.password}
+            helperText={errors.password ? errors.password.message : ''}
+          />
+        )}
+      />
+      <Controller
+        name="confirmPassword"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            label="Confirmar Contraseña"
+            type="password"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
+          />
+        )}
+      />
+      <Controller
+        name="country"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            label="País"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!errors.country}
+            helperText={errors.country ? errors.country.message : ''}
+          />
+        )}
+      />
+      <Controller
+        name="address"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            label="Domicilio"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!errors.address}
+            helperText={errors.address ? errors.address.message : ''}
+          />
+        )}
+      />
+      <Controller
+        name="phone"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            label="Teléfono"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!errors.phone}
+            helperText={errors.phone ? errors.phone.message : ''}
+          />
+        )}
+      />
+      <Controller
+        name="contactName"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField
+            {...field}
+            label="Nombre del Contacto"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            error={!!errors.contactName}
+            helperText={errors.contactName ? errors.contactName.message : ''}
+          />
+        )}
+      />
+      <Box display="flex" justifyContent="space-between" mt={2}>
+        <Button variant="outlined" onClick={handleReset}>
+          Limpiar
+        </Button>
+        <Button variant="contained" color="secondary" onClick={() => navigate('/')}>
+          Volver
+        </Button>
+        <Button type="submit" variant="contained" color="primary">
+          Grabar
+        </Button>
       </Box>
-    </FormContainer>
-  );
+    </Box>
+  </FormContainer>
+);
 };
 
 export default RegisterInstitution;

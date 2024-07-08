@@ -1,22 +1,39 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Box, Grid, Paper } from '@mui/material';
+import { TextField, Button, Typography, Container, Box, Paper, Modal, Grid } from '@mui/material';
 import { useUser } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
 
-const Login = ({ onRegister }) => {
+const StyledModal = styled(Modal)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setUser } = useUser();
+  const [error, setError] = useState('');
+  const [open, setOpen] = useState(false);
+  const { login } = useUser();
+  const navigate = useNavigate();
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    const loggedUser = {
-      name: 'Nombre Usuario',
-      email: email,
-      role: 'medico',
-      avatarUrl: 'https://via.placeholder.com/150'
-    };
-    setUser(loggedUser);
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+   
+    try {
+      await login({ email: trimmedEmail, password: trimmedPassword });
+      console.log("handleLogin: " + trimmedEmail)
+      navigate('/profile');
+    } catch (error) {
+        setError(error.response ? error.response.data.message : 'Login fallo. Please check your credentials and try again.');
+    }
   };
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
     <Container maxWidth="sm">
@@ -43,19 +60,67 @@ const Login = ({ onRegister }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            {error && <Typography color="error">{error}</Typography>}
+            <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
               Login
             </Button>
-            <Button variant="outlined" color="primary" fullWidth onClick={onRegister} style={{ marginTop: '16px' }}>
+            <Button variant="outlined" color="primary" fullWidth onClick={handleOpen} style={{ marginTop: '16px' }}>
               Registrar
             </Button>
           </Box>
         </Box>
       </Paper>
+
+      <StyledModal open={open} onClose={handleClose}>
+        <Paper elevation={3} style={{ padding: '16px', maxWidth: '400px', width: '100%' }}>
+          <Typography variant="h5" align="center">Registrar</Typography>
+          <Grid container spacing={2} justifyContent="center" style={{ marginTop: '16px' }}>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={() => navigate('/register-doctor')}
+              >
+                Registrar Médico
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={() => navigate('/register-institution')}
+              >
+                Registrar Institución
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={() => navigate('/register-ai')}
+              >
+                Registrar IA
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                onClick={handleClose}
+              >
+                Volver
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
+      </StyledModal>
     </Container>
   );
 };
 
 export default Login;
-
 

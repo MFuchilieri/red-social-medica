@@ -1,25 +1,31 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000', // Asegúrate de que esta URL apunte a tu backend
+  baseURL: 'http://localhost:5000',
 });
 
-export const getDoctors = async () => {
+export const loginUser = async (credentials) => {
   try {
-    const response = await api.get('/doctors');
+    const response = await api.post('/login', credentials);
     return response.data;
   } catch (error) {
-    console.error('Error fetching doctors:', error);
+    console.error('Error logging in:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
 
-export const getAISystems = async () => {
+export const getProfile = async () => {
   try {
-    const response = await api.get('/ai');
+    const token = localStorage.getItem('token');
+    console.log('Token:', token);
+    const response = await api.get('/profile', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
     return response.data;
   } catch (error) {
-    console.error('Error fetching AI systems:', error);
+    console.error('Error fetching user profile:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -29,7 +35,27 @@ export const registerUser = async (userData) => {
     const response = await api.post('/register', userData);
     return response.data;
   } catch (error) {
-    console.error('Error registering user:', error);
+    console.error('Error registering user:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+export const getDoctors = async () => {
+  try {
+    const response = await api.get('/doctors');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching doctors:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+export const getAISystems = async () => {
+  try {
+    const response = await api.get('/ai');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching AI systems:', error.response ? error.response.data : error.message);
     throw error;
   }
 };

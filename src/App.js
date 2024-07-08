@@ -1,27 +1,44 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/Home';
-import DoctorList from './components/DoctorList';
-import AIList from './components/AIList';
-import { UserProvider } from './context/UserContext';
-import { ThemeProvider } from './context/ThemeContext';
-import Header from './components/Layout/Header';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import SideMenu from './components/Layout/SideMenu';
+import Header from './components/Layout/Header';
+import Profile from './components/Profile';
+import Login from './components/Login';
+import RegisterDoctor from './components/RegisterDoctor';
+import RegisterInstitution from './components/RegisterInstitution';
+import RegisterAI from './components/RegisterAI';
+import { UserProvider } from './context/UserContext';
 
 const App = () => {
+  const [mode, setMode] = useState('light');
+
+  const theme = createTheme({
+    palette: {
+      mode: mode,
+    },
+  });
+
+  const toggleTheme = () => {
+    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+  };
+
   return (
     <UserProvider>
-      <ThemeProvider>
+      <ThemeProvider theme={theme}>
         <Router>
-          <Header />
+          <CssBaseline />
+          <Header toggleTheme={toggleTheme} />
           <SideMenu />
-          <div style={{ marginLeft: 240, padding: 16 }}>
+          <main style={{ marginLeft: 240, padding: 75 }}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/doctors" element={<DoctorList />} />
-              <Route path="/ai" element={<AIList />} />
+              <Route path="/" element={<Login />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/register-doctor" element={<RegisterDoctor />} />
+              <Route path="/register-institution" element={<RegisterInstitution />} />
+              <Route path="/register-ai" element={<RegisterAI />} />
             </Routes>
-          </div>
+          </main>
         </Router>
       </ThemeProvider>
     </UserProvider>
@@ -29,5 +46,3 @@ const App = () => {
 };
 
 export default App;
-
-
